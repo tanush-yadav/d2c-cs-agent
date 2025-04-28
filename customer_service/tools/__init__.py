@@ -17,11 +17,7 @@ Tools for the customer service agent.
 
 This module exports all tool functions for the customer service agent,
 organized by category:
-- General tools: discount approval, communication tools
-- Cart management: cart access and modification
-- Product tools: recommendations and availability checking
-- Service tools: scheduling and service information
-- Order tools: order tracking and management
+- Shopify tools for interacting with the Shopify API
 """
 
 from .tools import (
@@ -59,10 +55,4 @@ __all__ = [
     "get_available_planting_times",
     "send_care_instructions",
     "generate_qr_code",
-
-    # Order tools
-    "get_order",
-    "track_package",
-    "get_recent_orders",
-    "handle_delivery_request",
 ]
