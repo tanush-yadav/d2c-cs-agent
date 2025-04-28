@@ -117,8 +117,62 @@ class Customer(BaseModel):
         Returns:
             The Customer object if found, None otherwise.
         """
-        # In a real application, this would involve a database lookup.
-        # For this example, we'll just return a dummy customer.
+        # REAL CUSTOMER DATA: Gauri Khanna (based on Shopify data)
+        if current_customer_id == "7730071404758":
+            return Customer(
+                customer_id=current_customer_id,
+                account_number="GK7730071404758",
+                customer_first_name="Gauri",
+                customer_last_name="Khanna",
+                email="gaurikhanna.95.gk@gmail.com",
+                phone_number="+919560265482",
+                customer_start_date="2025-02-12",  # First order date
+                years_as_customer=0,  # New customer
+                billing_address=Address(
+                    street="Private Address",  # Protected for privacy
+                    city="Noida",  # Assumed based on UP state
+                    state="UP",
+                    zip="201301"  # Common Noida zip code
+                ),
+                purchase_history=[
+                    Purchase(
+                        date="2025-02-12",
+                        items=[
+                            Product(
+                                product_id="shapeshifter-bodysuit-1",
+                                name="ShapeShifter Bodysuit (Strapless, Black, S)",
+                                quantity=1,
+                            ),
+                        ],
+                        total_amount=1399.0,
+                    ),
+                    Purchase(
+                        date="2025-03-27",
+                        items=[
+                            Product(
+                                product_id="shapeshifter-bodysuit-1",
+                                name="ShapeShifter Bodysuit (Strapless, Black, S)",
+                                quantity=1,
+                            ),
+                        ],
+                        total_amount=1310.0,
+                    ),
+                ],
+                loyalty_points=270,  # Calculated based on purchase history
+                preferred_store="Kurve Online Store",
+                communication_preferences=CommunicationPreferences(
+                    email=True, sms=True, push_notifications=False
+                ),
+                garden_profile=GardenProfile(
+                    type="indoor",
+                    size="small",
+                    sun_exposure="partial",
+                    soil_type="potting mix",
+                    interests=["houseplants", "aromatics"],
+                ),
+                scheduled_appointments={},
+            )
+        # Default dummy customer for other IDs
         return Customer(
             customer_id=current_customer_id,
             account_number="428765091",

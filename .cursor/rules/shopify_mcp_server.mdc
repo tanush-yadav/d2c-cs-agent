@@ -1,0 +1,16 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Shopify MCP Server Structure
+
+This directory contains the Node.js/TypeScript code for the Shopify MCP server.
+
+- **Package Management:** [package.json](mdc:shopify-mcp-server/package.json)
+- **TypeScript Configuration:** [tsconfig.json](mdc:shopify-mcp-server/tsconfig.json)
+- **Source Code:** [src/](mdc:shopify-mcp-server/src) (Likely contains the main entry point, e.g., `index.ts`)
+- **README:** [README.md](mdc:shopify-mcp-server/README.md)
+- **Build Output:** [build/](mdc:shopify-mcp-server/build)
+- **Tests:** (Potentially defined in `package.json` or a `tests/` directory)
+- **Dependencies:** [node_modules/](mdc:shopify-mcp-server/node_modules)

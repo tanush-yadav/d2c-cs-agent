@@ -1,0 +1,98 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Agent Development Guidelines
+
+This document outlines the best practices for developing and extending the customer service agent. These guidelines ensure the agent operates at production quality and maintains consistent behavior.
+
+## Agent Architecture
+
+- Agent initialization lives in [agent.py](mdc:customer_service/agent.py)
+- Configuration is managed through [config.py](mdc:customer_service/config.py)
+- Agent prompts and instructions in [prompts.py](mdc:customer_service/prompts.py)
+- Tools are organized by functionality in [tools/](mdc:customer_service/tools)
+
+## Prompt Engineering
+
+1. Always keep the agent persona consistent across all interactions
+2. Instruction prompts should be clear, specific, and unambiguous
+3. Break down complex instructions into step-by-step guidance
+4. Include explicit constraints and boundaries for agent behavior
+5. Use examples to demonstrate expected responses in edge cases
+6. Regularly review and refine prompts based on agent performance metrics
+
+## Tool Development
+
+1. Each tool should perform a single, focused function
+2. Tools must include:
+   - Clear documentation
+   - Type annotations
+   - Input validation
+   - Proper error handling
+   - Unit tests
+3. Follow the existing pattern for tool registration in [agent.py](mdc:customer_service/agent.py)
+4. Implement rate limiting for external API calls
+5. Use async functions for I/O-bound operations
+6. Return structured responses with consistent formats
+
+## Tool Integration Guidelines
+
+1. When adding new tools:
+   - Import the tool in agent.py
+   - Add to the tools list in the Agent initialization
+   - Document its purpose and usage
+2. Tools should be stateless when possible
+3. For stateful tools, use proper state management via the agent's context
+4. All tool failures should be gracefully handled
+5. Implement appropriate timeouts for external services
+
+## Callback Handlers
+
+1. Use the provided callback handlers for consistent behavior:
+   - `before_agent` for initialization and context setup
+   - `before_tool` for logging and validation
+   - `rate_limit_callback` for API rate limiting
+2. Extend callbacks consistently when adding new functionality
+3. Ensure callbacks do not block the main agent execution flow
+4. Add appropriate error handling in all callbacks
+
+## MCP Integration
+
+1. Follow the patterns in [shared_libraries/mcp_client.py](mdc:customer_service/shared_libraries/mcp_client.py)
+2. Always clean up MCP resources properly
+3. Implement proper error handling for MCP client operations
+4. Use connection pooling for efficiency
+5. Add appropriate logging for MCP operations
+
+## Shopify Integration
+
+1. Use the Shopify MCP server for all Shopify API operations
+2. Follow proper authentication patterns
+3. Implement rate limiting to avoid Shopify API limits
+4. Cache frequently used data when appropriate
+5. Add robust error handling for all Shopify operations
+
+## Testing & Quality Assurance
+
+1. Test agent behaviors with the provided evaluation set
+2. Implement both unit tests and integration tests
+3. Use conversation simulation for end-to-end testing
+4. Test with a variety of customer intents and scenarios
+5. Regularly review agent logs to identify improvement areas
+6. Monitor key performance metrics:
+   - Response accuracy
+   - Task completion rate
+   - Conversation handling time
+   - Customer satisfaction
+   - Error rate
+
+## Deployment Considerations
+
+1. Implement proper logging for production monitoring
+2. Set up alerts for critical error conditions
+3. Use structured logging for easier debugging
+4. Implement circuit breakers for external service dependencies
+5. Monitor resource usage (memory, CPU) in production
+6. Implement graceful shutdown procedures for cleanup

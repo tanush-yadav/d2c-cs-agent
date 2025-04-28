@@ -1,0 +1,105 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Python Code Quality Standards
+
+This document outlines the coding standards and best practices for the customer service agent project. Following these guidelines will ensure production-grade code quality.
+
+## Project Structure
+
+- [agent.py](mdc:customer_service/agent.py) - Main agent logic and initialization
+- [config.py](mdc:customer_service/config.py) - Configuration settings using Pydantic
+- [prompts.py](mdc:customer_service/prompts.py) - Agent prompts and instructions
+- [tools/](mdc:customer_service/tools) - Agent tools implementation
+- [entities/](mdc:customer_service/entities) - Data entities and models
+- [shared_libraries/](mdc:customer_service/shared_libraries) - Shared utilities and helpers
+
+## Coding Standards
+
+### Python Style Guide
+
+1. Follow PEP 8 style guidelines for all Python code
+2. Use 4 spaces for indentation, not tabs
+3. Maximum line length should be 88 characters (Black default)
+4. Use descriptive variable names in snake_case
+5. Class names should use CamelCase
+6. Constants should be in UPPER_CASE
+7. Private methods/variables should use leading underscore (_method_name)
+
+### Imports
+
+1. Organize imports in the following order:
+   - Standard library imports
+   - Third-party imports
+   - Local application imports
+2. Each group should be separated by a blank line
+3. Imports should be alphabetized within each group
+4. Use absolute imports for clarity
+
+### Documentation
+
+1. All modules, classes, functions must have docstrings
+2. Use Google-style docstrings format
+3. Include type hints for all function parameters and return values
+4. Document exceptions that can be raised
+5. Keep docstrings updated when code changes
+
+## Error Handling
+
+1. Use specific exception types instead of catching generic exceptions
+2. Always log exceptions with appropriate context
+3. Handle exceptions at the appropriate level
+4. Use try/except blocks only around code that might raise specific exceptions
+5. Don't use exceptions for flow control
+
+## Logging
+
+1. Use the logging module for all logging
+2. Configure appropriate log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+3. Include context information in log messages
+4. Don't log sensitive information
+5. Use structured logging when possible
+
+## Tools Implementation
+
+1. All tools should follow the standard pattern in [tools.py](mdc:customer_service/tools/tools.py)
+2. Tool functions should have clear input/output contracts
+3. Each tool should have proper error handling
+4. Tools should be composable and single-purpose
+5. Include rate limiting and monitoring for external API calls
+
+## Configuration Management
+
+1. Use Pydantic for configuration validation
+2. Store sensitive configuration in environment variables, not code
+3. Provide reasonable defaults for all configuration values
+4. Document all configuration options
+5. Use typed configuration to catch errors early
+
+## Testing
+
+1. Write unit tests for all functionality
+2. Use pytest for testing
+3. Aim for at least 80% code coverage
+4. Mock external dependencies in tests
+5. Include both positive and negative test cases
+6. Test edge cases and error conditions
+
+## Performance Considerations
+
+1. Use async/await for I/O-bound operations
+2. Implement proper connection pooling for external services
+3. Cache expensive computation results when appropriate
+4. Use generators for processing large datasets
+5. Monitor and optimize resource usage
+
+## Security Best Practices
+
+1. Validate all user inputs
+2. Don't store credentials in code
+3. Use secure connection protocols (HTTPS, TLS)
+4. Apply the principle of least privilege
+5. Implement proper authentication and authorization
+6. Sanitize all outputs to prevent injection attacks

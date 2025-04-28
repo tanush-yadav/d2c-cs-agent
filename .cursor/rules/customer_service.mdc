@@ -1,0 +1,17 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Customer Service Agent Structure
+
+This directory contains the Python code for the customer service agent.
+
+- **Main Agent Logic:** [agent.py](mdc:customer_service/agent.py)
+- **Configuration:** [config.py](mdc:customer_service/config.py)
+- **Prompts:** [prompts.py](mdc:customer_service/prompts.py)
+- **Data Entities:** [entities/](mdc:customer_service/entities)
+- **Agent Tools:** [tools/](mdc:customer_service/tools)
+- **Shared Libraries:** [shared_libraries/](mdc:customer_service/shared_libraries)
+- **Initialization:** [__init__.py](mdc:customer_service/__init__.py)
+

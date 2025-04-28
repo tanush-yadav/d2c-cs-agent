@@ -1,0 +1,96 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Shopify Integration Standards
+
+This document outlines best practices for integrating with Shopify within the customer service agent. Adhering to these standards ensures reliable and efficient Shopify operations.
+
+## Architecture
+
+- Use the Shopify MCP server for all Shopify API interactions
+- Configure Shopify authentication in environment variables
+- Implement a consistent error handling strategy
+- Cache frequently accessed data when appropriate
+
+## MCP Configuration
+
+1. Configure the Shopify MCP server as shown in the [mcp.json](mdc:.cursor/mcp.json) file
+2. Protect Shopify access tokens and credentials
+3. Use environment variables for all sensitive configuration
+4. Add appropriate logging for MCP operations
+
+## API Best Practices
+
+1. Use GraphQL queries for efficient data retrieval
+2. Implement pagination for large data sets
+3. Use the appropriate Shopify API version
+4. Add retry logic for transient failures
+5. Implement rate limiting to avoid API throttling
+6. Set appropriate timeouts for all API calls
+
+## Data Operations
+
+### Product Operations
+
+1. Use appropriate filtering when querying products
+2. Cache product data when querying frequently
+3. Handle product variants properly
+4. Validate product availability before recommending
+
+### Customer Operations
+
+1. Keep customer data secure and compliant with privacy regulations
+2. Use customer tags for segmentation
+3. Validate customer existence before operations
+4. Handle customer metadata appropriately
+
+### Order Operations
+
+1. Use order queries to retrieve order information
+2. Implement proper filtering for order lookups
+3. Handle order status updates properly
+4. Track shipping and fulfillment status
+5. Implement proper error handling for order operations
+
+## Testing
+
+1. Create mock Shopify responses for testing
+2. Test both successful and error scenarios
+3. Validate pagination handling
+4. Test rate limiting and retry logic
+5. Simulate API throttling in tests
+
+## Security
+
+1. Never expose Shopify access tokens in logs or responses
+2. Use the principle of least privilege for access tokens
+3. Validate all input parameters before sending to Shopify
+4. Sanitize data returned from Shopify before presenting to users
+5. Implement proper error handling to avoid exposing sensitive information
+
+## Performance
+
+1. Use GraphQL to minimize API calls
+2. Implement connection pooling
+3. Cache frequently accessed data
+4. Use asynchronous calls where appropriate
+5. Monitor performance metrics
+6. Implement timeouts to prevent hanging operations
+
+## Error Handling
+
+1. Use specific error types for different Shopify errors
+2. Log appropriate context with errors
+3. Implement retry logic with exponential backoff
+4. Have fallback mechanisms for critical operations
+5. Present user-friendly error messages
+
+## Webhooks
+
+1. Implement proper webhook validation
+2. Handle webhook payloads securely
+3. Process webhooks asynchronously
+4. Add appropriate logging for webhook events
+5. Implement idempotent webhook processing

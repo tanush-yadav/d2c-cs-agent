@@ -11,10 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" includes all shared libraries for the agent."""
-from .callbacks import rate_limit_callback
-from .callbacks import before_tool
-from .callbacks import before_agent
+
+"""
+Shared libraries and utilities for the customer service agent.
+
+This package contains shared utility functions, callbacks, and client libraries
+that are used throughout the customer service agent implementation.
+"""
+
+from .callbacks import before_agent, before_tool, rate_limit_callback
 
 
-__all__ = ["rate_limit_callback", "before_tool", "before_agent"]
+__all__ = [
+    "before_agent",
+    "before_tool",
+    "rate_limit_callback",
+]
