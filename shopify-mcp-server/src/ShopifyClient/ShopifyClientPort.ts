@@ -550,6 +550,30 @@ export type CompleteDraftOrderResponse = {
   orderId: string;
 };
 
+export type CancelOrderInput = {
+  orderId: string;
+  restock: boolean;
+  refund: boolean;
+  reason: "CUSTOMER" | "INVENTORY" | "FRAUD" | "OTHER";
+  notifyCustomer?: boolean;
+  staffNote?: string | null;
+};
+
+export type OrderCancelPayload = {
+  job: {
+    id: string;
+  };
+  orderCancelUserErrors: Array<{
+    code?: string;
+    field: string[];
+    message: string;
+  }>;
+  userErrors: Array<{
+    field: string[];
+    message: string;
+  }>;
+};
+
 function serializeError(err: any): any {
   if (Array.isArray(err)) {
     return err.map((item) => serializeError(item));
@@ -1061,8 +1085,7 @@ export interface ShopifyClientPort {
   createDraftOrder(
     accessToken: string,
     shop: string,
-    draftOrderData: CreateDraftOrderPayload,
-    idempotencyKey: string
+    draftOrderData: CreateDraftOrderPayload
   ): Promise<DraftOrderResponse>;
 
   completeDraftOrder(
@@ -1075,4 +1098,10 @@ export interface ShopifyClientPort {
   getIdFromGid(gid: string): string;
 
   loadShopDetail(accessToken: string, shop: string): Promise<ShopResponse>;
+
+  cancelOrder(
+    accessToken: string,
+    shop: string,
+    cancelInput: CancelOrderInput
+  ): Promise<OrderCancelPayload>;
 }

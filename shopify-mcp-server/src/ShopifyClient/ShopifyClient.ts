@@ -1,6 +1,7 @@
 import { gql } from "graphql-request";
 import {
   BasicDiscountCodeResponse,
+  CancelOrderInput,
   CompleteDraftOrderResponse,
   CreateBasicDiscountCodeInput,
   CreateBasicDiscountCodeResponse,
@@ -19,6 +20,7 @@ import {
   LoadStorefrontsResponse,
   LoadVariantsByIdResponse,
   Maybe,
+  OrderCancelPayload,
   ProductNode,
   ProductVariantWithProductDetails,
   ShopResponse,
@@ -44,7 +46,7 @@ import {
   ShopifyWebhookTopicGraphql,
   getGraphqlShopifyError,
   getGraphqlShopifyUserError,
-  getHttpShopifyError,
+  getHttpShopifyError
 } from "./ShopifyClientPort.js";
 
 const productImagesFragment = gql`
@@ -1805,5 +1807,82 @@ export class ShopifyClient implements ShopifyClientPort {
       case ShopifyWebhookTopic.ORDERS_UPDATED:
         return ShopifyWebhookTopicGraphql.ORDERS_UPDATED;
     }
+  }
+
+  async cancelOrder(
+    accessToken: string,
+    shop: string,
+    cancelInput: CancelOrderInput
+  ): Promise<OrderCancelPayload> {
+    const myshopifyDomain = await this.getMyShopifyDomain(accessToken, shop);
+
+    const graphqlQuery = gql`
+      mutation cancelOrder(
+        $orderId: ID!
+        $restock: Boolean!
+        $reason: OrderCancelReason!
+        $refund: Boolean!
+        $notifyCustomer: Boolean
+        $staffNote: String
+      ) {
+        orderCancel(
+          orderId: $orderId
+          restock: $restock
+          reason: $reason
+          refund: $refund
+          notifyCustomer: $notifyCustomer
+          staffNote: $staffNote
+        ) {
+          job {
+            id
+          }
+          orderCancelUserErrors {
+            field
+            message
+            code
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+    `;
+
+    const variables = {
+      orderId: cancelInput.orderId,
+      restock: cancelInput.restock,
+      reason: cancelInput.reason,
+      refund: cancelInput.refund,
+      notifyCustomer: cancelInput.notifyCustomer ?? false,
+      staffNote: cancelInput.staffNote ?? null,
+    };
+
+    const res = await this.shopifyGraphqlRequest<{
+       data: {
+         orderCancel: OrderCancelPayload
+       }
+     }>({
+      url: `https://${myshopifyDomain}/admin/api/${this.SHOPIFY_API_VERSION}/graphql.json`,
+      accessToken,
+      query: graphqlQuery,
+      variables,
+    });
+
+    const orderCancelPayload = res.data.data.orderCancel;
+
+    if ((orderCancelPayload.orderCancelUserErrors && orderCancelPayload.orderCancelUserErrors.length > 0) ||
+        (orderCancelPayload.userErrors && orderCancelPayload.userErrors.length > 0)) {
+      throw getGraphqlShopifyUserError(
+        [...(orderCancelPayload.orderCancelUserErrors || []), ...(orderCancelPayload.userErrors || [])],
+        {
+          shop,
+          mutation: 'orderCancel',
+          variables,
+        }
+      );
+    }
+
+    return orderCancelPayload;
   }
 }

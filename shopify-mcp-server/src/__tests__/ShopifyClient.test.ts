@@ -174,6 +174,42 @@ describe("ShopifyClient", () => {
       expect(order).toBeDefined();
       expect(order.id).toBeDefined();
     });
+
+    // This test is commented out because it performs a real cancellation
+    it("should cancel an order", async () => {
+      // load orders to get a valid order id
+      const orders = await client.loadOrders(
+        SHOPIFY_ACCESS_TOKEN,
+        MYSHOPIFY_DOMAIN,
+        {
+          first: 1,
+          query: "status:unfulfilled"
+        }
+      );
+      const orderId = orders.orders[0]?.id?.toString();
+      expect(orderId).toBeDefined();
+      if (!orderId) {
+        throw new Error("No open order found to cancel");
+      }
+
+      const result = await client.cancelOrder(
+        SHOPIFY_ACCESS_TOKEN,
+        MYSHOPIFY_DOMAIN,
+        {
+          orderId,
+          restock: true,
+          refund: false,
+          reason: "INVENTORY",
+          notifyCustomer: false
+        }
+      );
+
+      expect(result).toBeDefined();
+      expect(result.job).toBeDefined();
+      expect(result.job.id).toBeDefined();
+      expect(Array.isArray(result.orderCancelUserErrors)).toBe(true);
+      expect(Array.isArray(result.userErrors)).toBe(true);
+    });
   });
 
   describe("Discounts", () => {

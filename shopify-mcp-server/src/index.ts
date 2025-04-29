@@ -395,6 +395,57 @@ server.tool(
   }
 );
 
+server.tool(
+  "cancel-order",
+  "Cancel an order if it has not been fulfilled",
+  {
+    orderId: z.string().describe("The GraphQL ID of the order to cancel (e.g., gid://shopify/Order/12345)"),
+    restock: z.boolean().describe("Whether the items should be restocked"),
+    refund: z.boolean().describe("Whether to issue a refund for the order"),
+    reason: z
+      .enum(["CUSTOMER", "INVENTORY", "FRAUD", "OTHER"])
+      .describe("Reason for cancellation (CUSTOMER, INVENTORY, FRAUD, OTHER)"),
+    notifyCustomer: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("Whether to send a cancellation notification email to the customer"),
+    staffNote: z
+      .string()
+      .optional()
+      .describe("An optional internal note for the cancellation"),
+  },
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: cancel-order with args: ${JSON.stringify(args)}`
+    );
+    const { orderId, restock, refund, reason, notifyCustomer, staffNote } = args;
+    const client = new ShopifyClient();
+    try {
+      // Assuming ShopifyClient has a method `cancelOrder` that executes the mutation
+      const result = await client.cancelOrder(
+        SHOPIFY_ACCESS_TOKEN,
+        MYSHOPIFY_DOMAIN,
+        {
+          orderId,
+          restock,
+          refund,
+          reason,
+          notifyCustomer: notifyCustomer ?? false,
+          staffNote: staffNote ?? null,
+        }
+      );
+      // Assuming the client method returns the payload, including the order or userErrors
+      return {
+        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+      };
+    } catch (error) {
+      // Use existing error handler, which should report errors correctly
+      return handleError("Failed to cancel order", error);
+    }
+  }
+);
+
 // Discount Tools
 server.tool(
   "create-discount",
