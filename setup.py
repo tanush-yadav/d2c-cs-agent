@@ -12,9 +12,7 @@ setup(
     author_email="your.email@example.com",
     packages=find_packages(),
     python_requires=">=3.9",
-    install_requires=[
-        "google-adk"
-    ],
+    install_requires=["google-adk"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

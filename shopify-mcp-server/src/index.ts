@@ -350,13 +350,14 @@ server.tool(
         MYSHOPIFY_DOMAIN,
         {
           first,
-          // after,
+          after,
           query,
           sortKey,
           reverse,
         }
       );
       const formattedOrders = response.orders.map(formatOrder);
+      console.log("formattedOrders", formattedOrders);
       return {
         content: [{ type: "text", text: formattedOrders.join("\n---\n") }],
       };
@@ -384,6 +385,7 @@ server.tool(
         MYSHOPIFY_DOMAIN,
         { orderId }
       );
+      console.log("order", order);
       return {
         content: [{ type: "text", text: JSON.stringify(order, null, 2) }],
       };

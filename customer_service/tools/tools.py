@@ -287,9 +287,7 @@ def schedule_planting_service(
     # MOCK API RESPONSE - Replace with actual API call to your scheduling system
     # Calculate confirmation time based on date and time_range
     start_time_str = time_range.split("-")[0]  # Get the start time (e.g., "9")
-    confirmation_time_str = (
-        f"{date} {start_time_str}:00"  # e.g., "2024-07-29 9:00"
-    )
+    confirmation_time_str = f"{date} {start_time_str}:00"  # e.g., "2024-07-29 9:00"
 
     return {
         "status": "success",
@@ -378,9 +376,9 @@ def generate_qr_code(
         discount_type,
     )
     # MOCK API RESPONSE - Replace with actual QR code generation library
-    expiration_date = (
-        datetime.now() + timedelta(days=expiration_days)
-    ).strftime("%Y-%m-%d")
+    expiration_date = (datetime.now() + timedelta(days=expiration_days)).strftime(
+        "%Y-%m-%d"
+    )
     return {
         "status": "success",
         "qr_code_data": "MOCK_QR_CODE_DATA",  # Replace with actual QR code
