@@ -30,7 +30,7 @@ _mcp_tools = None
 
 # Create the agent instance at module level
 root_agent = Agent(
-    model="gemini-1.5-flash",
+    model="gemini-2.0-flash",
     name="shopify_agent",
     global_instruction=GLOBAL_INSTRUCTION,
     sub_agents=[],  # Will be populated during initialization
