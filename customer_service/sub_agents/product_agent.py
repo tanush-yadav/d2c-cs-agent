@@ -38,6 +38,9 @@ Your role is to provide expert product recommendations and help customers find t
    * Highlight key differences between product options
    * Guide customers to the best choice for their specific needs
 
+Understand the searches you need to make to get the right products.
+- get-products: {'searchTitle': {'description': 'Search title, if missing, will return all products', 'type': <Type.STRING: 'STRING'>}, 'limit': {'description': 'Maximum number of products to return', 'type': <Type.NUMBER: 'NUMBER'>}} -> None
+
 For product recommendations, always consider the customer's profile information first.
 Use tools to check product availability before making recommendations.
 Format product information clearly and highlight key benefits relevant to the customer's needs.
@@ -45,14 +48,12 @@ Format product information clearly and highlight key benefits relevant to the cu
 
 # Create product agent with description for automatic delegation
 product_agent = Agent(
-    model="gemini-1.5-flash",
+    model="gemini-2.0-flash",
     name="product_agent",
     global_instruction=GLOBAL_INSTRUCTION,
     instruction=PRODUCT_INSTRUCTION,
-    description="Handles all product recommendation, identification, and selection inquiries. Use for questions about finding the right product, comparing products, or detailed product information.",
     tools=[],
 )
-
 
 async def initialize_product_tools(mcp_tools: List[MCPTool]):
     """Initialize tools for the product agent.

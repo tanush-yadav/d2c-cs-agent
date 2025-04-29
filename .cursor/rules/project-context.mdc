@@ -1,0 +1,7 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+1. No IDs will be inputted as gid:// because that's not the norm.
+2. Always query introspect_admin_schema before making a schema decision.

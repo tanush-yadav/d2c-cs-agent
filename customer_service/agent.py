@@ -14,10 +14,8 @@ from customer_service.prompts import GLOBAL_INSTRUCTION, INSTRUCTION
 from customer_service.shared_libraries.callbacks import before_agent
 from customer_service.sub_agents import (
     order_agent,
-    returns_agent,
     product_agent,
     initialize_order_tools,
-    initialize_returns_tools,
     initialize_product_tools,
 )
 
@@ -90,14 +88,13 @@ async def initialize_agents_and_tools():
 
     # Initialize specialized agents with their tools
     await initialize_order_tools(tools)
-    await initialize_returns_tools(tools)
     await initialize_product_tools(tools)
 
     # Add tools to main agent
     root_agent.tools.extend(tools)
 
     # Add specialized agents to sub_agents list for automatic delegation
-    root_agent.sub_agents = [order_agent, returns_agent, product_agent]
+    root_agent.sub_agents = [order_agent, product_agent]
     logger.info(
         f"Configured {len(root_agent.sub_agents)} sub-agents for automatic delegation"
     )

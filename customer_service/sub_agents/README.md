@@ -18,7 +18,7 @@ The customer service system uses a multi-agent architecture with automatic deleg
           ▼
 ┌─────────┴──────────┬─────────────────────┬────────────────────┐
 │                    │                     │                    │
-│   Order Agent      │   Returns Agent     │   Product Agent    │
+│   Order Agent      │   Product Agent     │                    │
 │                    │                     │                    │
 └────────────────────┴─────────────────────┴────────────────────┘
 ```
