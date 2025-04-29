@@ -132,7 +132,7 @@ class Customer(BaseModel):
                     street="Private Address",  # Protected for privacy
                     city="Noida",  # Assumed based on UP state
                     state="UP",
-                    zip="201301"  # Common Noida zip code
+                    zip="201301",  # Common Noida zip code
                 ),
                 purchase_history=[
                     Purchase(

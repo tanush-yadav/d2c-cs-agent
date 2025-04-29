@@ -41,12 +41,10 @@ class AgentModel(BaseModel):
     """
 
     name: str = Field(
-        default="customer_service_agent",
-        description="Name of the agent instance"
+        default="customer_service_agent", description="Name of the agent instance"
     )
     model: str = Field(
-        default="gemini-2.0-flash-001",
-        description="AI model to use for the agent"
+        default="gemini-2.0-flash-001", description="AI model to use for the agent"
     )
 
 
@@ -67,34 +65,20 @@ class Config(BaseSettings):
     """
 
     model_config = SettingsConfigDict(
-        env_file=os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "../.env"
-        ),
+        env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.env"),
         env_prefix="GOOGLE_",
         case_sensitive=True,
     )
 
     agent_settings: AgentModel = Field(
-        default_factory=AgentModel,
-        description="Settings for the agent model"
+        default_factory=AgentModel, description="Settings for the agent model"
     )
     app_name: str = Field(
-        default="customer_service_app",
-        description="Name of the application"
+        default="customer_service_app", description="Name of the application"
     )
-    CLOUD_PROJECT: str = Field(
-        default="my_project",
-        description="GCP project ID"
-    )
-    CLOUD_LOCATION: str = Field(
-        default="us-central1",
-        description="GCP region"
-    )
+    CLOUD_PROJECT: str = Field(default="my_project", description="GCP project ID")
+    CLOUD_LOCATION: str = Field(default="us-central1", description="GCP region")
     GENAI_USE_VERTEXAI: str = Field(
-        default="1",
-        description="Flag to use VertexAI (1=enabled, 0=disabled)"
+        default="1", description="Flag to use VertexAI (1=enabled, 0=disabled)"
     )
-    API_KEY: Optional[str] = Field(
-        default="",
-        description="API key for authentication"
-    )
+    API_KEY: Optional[str] = Field(default="", description="API key for authentication")

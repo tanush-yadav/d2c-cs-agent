@@ -41,15 +41,12 @@ __all__ = [
     "approve_discount",
     "sync_ask_for_approval",
     "update_salesforce_crm",
-
     # Cart management tools
     "access_cart_information",
     "modify_cart",
-
     # Product tools
     "get_product_recommendations",
     "check_product_availability",
-
     # Service tools
     "schedule_planting_service",
     "get_available_planting_times",

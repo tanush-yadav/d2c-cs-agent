@@ -173,6 +173,8 @@ def before_agent(callback_context: InvocationContext) -> None:
         callback_context: The invocation context for the agent
     """
     # Load customer profile if not already present
+
+    logger.info(f"Loading customer profile for customer ID: {CUSTOMER_ID}")
     if "customer_profile" not in callback_context.state:
         callback_context.state["customer_profile"] = Customer.get_customer(
             CUSTOMER_ID

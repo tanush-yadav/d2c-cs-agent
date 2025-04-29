@@ -1,0 +1,56 @@
+[
+  {
+    "name": "case33e928",
+    "data": [
+      {
+        "query": "Hi",
+        "expected_tool_use": [],
+        "expected_intermediate_agent_responses": [],
+        "reference": "Hi Gauri! Welcome back to Kurve! I see you've purchased our ShapeShifter Bodysuit a couple of times already.  Is there anything I can help you with today?\n"
+      },
+      {
+        "query": "Where is my order?",
+        "expected_tool_use": [],
+        "expected_intermediate_agent_responses": [],
+        "reference": "To help me locate your order, could you please provide the order ID or confirm if you're asking about the order placed on March 27th containing one ShapeShifter Bodysuit (Strapless, Black, S)?\n"
+      },
+      {
+        "query": "No check recent orders",
+        "expected_tool_use": [
+          {
+            "tool_name": "get-orders",
+            "tool_input": {
+              "query": "customer_id:7730071404758"
+            }
+          }
+        ],
+        "expected_intermediate_agent_responses": [],
+        "reference": "You have two recent orders.  The first, #1576, was placed on February 12th and contained one ShapeShifter Bodysuit (Strapless, Black, S).  The second, #1579, was placed on March 27th and also contained one ShapeShifter Bodysuit (Strapless, Black, S).  Which order are you inquiring about?\n"
+      },
+      {
+        "query": "YESS 1576",
+        "expected_tool_use": [],
+        "expected_intermediate_agent_responses": [],
+        "reference": "Okay, Gauri. Order #1576, placed on February 12th, containing one ShapeShifter Bodysuit (Strapless, Black, S), has been successfully fulfilled.  The tracking number is 14344950434437 with XpressBees. You can track its progress here: https://shipment.xpressbees.com/shipping/tracking/14344950434437. Is there anything else I can help you with today?\n\n\n"
+      },
+      {
+        "query": "More details on this order",
+        "expected_tool_use": [
+          {
+            "tool_name": "get-order",
+            "tool_input": {
+              "orderId": "5865972728022"
+            }
+          }
+        ],
+        "expected_intermediate_agent_responses": [],
+        "reference": "Here are the details for order #1576:\n\n*   **Order ID:** 5865972728022\n*   **Order Number:** 1576\n*   **Date Placed:** February 12th, 2025\n*   **Total Amount:** 1399.00 INR\n*   **Shipping Cost:** 89.00 INR\n*   **Payment Status:** Paid\n*   **Shipping Status:** Delivered\n*   **Item(s):** One ShapeShifter Bodysuit (Strapless, Black, S)  (Price: 1310.00 INR)\n*   **Tracking Information:**  Tracking number 14344950434437 via XpressBees.  [Tracking Link](https://shipment.xpressbees.com/shipping/tracking/14344950434437)\n\nIs there anything else I can assist you with?\n"
+      }
+    ],
+    "initial_session": {
+      "state": {},
+      "app_name": "customer_service",
+      "user_id": "user"
+    }
+  }
+]
