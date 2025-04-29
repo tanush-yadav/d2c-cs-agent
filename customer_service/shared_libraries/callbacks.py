@@ -179,15 +179,3 @@ def before_agent(callback_context: InvocationContext) -> None:
         ).to_json()
 
         logger.debug(f"Loaded customer profile for customer ID: {CUSTOMER_ID}")
-
-
-def after_tool(
-    tool: BaseTool,
-    args: Dict[str, Any],
-    tool_context: CallbackContext,
-    result: Any
-) -> None:
-    if tool.name == "get_order":
-        # extract the correct order ID from the result
-        # save the new order ID mapped to the order number
-        # 
