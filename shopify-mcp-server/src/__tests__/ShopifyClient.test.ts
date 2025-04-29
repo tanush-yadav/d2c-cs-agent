@@ -2,8 +2,7 @@ import { config } from "dotenv";
 import { ShopifyClient } from "../ShopifyClient/ShopifyClient.js";
 import {
   CreateBasicDiscountCodeInput,
-  CreateDraftOrderPayload,
-  ShopifyWebhookTopic,
+  ShopifyWebhookTopic
 } from "../ShopifyClient/ShopifyClientPort.js";
 
 // Load environment variables from .env file
@@ -212,73 +211,74 @@ describe("ShopifyClient", () => {
     });
   });
 
-  describe("Draft Orders", () => {
-    it("should create and complete draft order", async () => {
-      // load products to get a valid variant id
-      const allProducts = await client.loadProducts(
-        SHOPIFY_ACCESS_TOKEN,
-        MYSHOPIFY_DOMAIN,
-        null,
-        100
-      );
-      const variantIds = allProducts.products.flatMap((product) =>
-        product.variants.edges.map((variant) => variant.node.id.toString())
-      );
-      const variantId = variantIds[0];
-      expect(variantId).toBeDefined();
-      if (!variantId) {
-        throw new Error("No variant id found");
-      }
-      const draftOrderData: CreateDraftOrderPayload = {
-        lineItems: [
-          {
-            variantId,
-            quantity: 1,
-          },
-        ],
-        email: "test@example.com",
-        shippingAddress: {
-          address1: "123 Test St",
-          city: "Test City",
-          province: "Test Province",
-          country: "Test Country",
-          zip: "12345",
-          firstName: "Test",
-          lastName: "User",
-          countryCode: "US",
-        },
-        billingAddress: {
-          address1: "123 Test St",
-          city: "Test City",
-          province: "Test Province",
-          country: "Test Country",
-          zip: "12345",
-          firstName: "Test",
-          lastName: "User",
-          countryCode: "US",
-        },
-        tags: "test",
-        note: "Test draft order",
-      };
+  // triggers emails, not required right now
+  // describe("Draft Orders", () => {
+  //   it("should create and complete draft order", async () => {
+  //     // load products to get a valid variant id
+  //     const allProducts = await client.loadProducts(
+  //       SHOPIFY_ACCESS_TOKEN,
+  //       MYSHOPIFY_DOMAIN,
+  //       null,
+  //       100
+  //     );
+  //     const variantIds = allProducts.products.flatMap((product) =>
+  //       product.variants.edges.map((variant) => variant.node.id.toString())
+  //     );
+  //     const variantId = variantIds[0];
+  //     expect(variantId).toBeDefined();
+  //     if (!variantId) {
+  //       throw new Error("No variant id found");
+  //     }
+  //     const draftOrderData: CreateDraftOrderPayload = {
+  //       lineItems: [
+  //         {
+  //           variantId,
+  //           quantity: 1,
+  //         },
+  //       ],
+  //       email: "test@example.com",
+  //       shippingAddress: {
+  //         address1: "123 Test St",
+  //         city: "Test City",
+  //         province: "Test Province",
+  //         country: "Test Country",
+  //         zip: "12345",
+  //         firstName: "Test",
+  //         lastName: "User",
+  //         countryCode: "US",
+  //       },
+  //       billingAddress: {
+  //         address1: "123 Test St",
+  //         city: "Test City",
+  //         province: "Test Province",
+  //         country: "Test Country",
+  //         zip: "12345",
+  //         firstName: "Test",
+  //         lastName: "User",
+  //         countryCode: "US",
+  //       },
+  //       tags: "test",
+  //       note: "Test draft order",
+  //     };
 
-      const draftOrder = await client.createDraftOrder(
-        SHOPIFY_ACCESS_TOKEN,
-        MYSHOPIFY_DOMAIN,
-        draftOrderData
-      );
-      expect(draftOrder).toBeDefined();
-      expect(draftOrder.draftOrderId).toBeDefined();
+  //     const draftOrder = await client.createDraftOrder(
+  //       SHOPIFY_ACCESS_TOKEN,
+  //       MYSHOPIFY_DOMAIN,
+  //       draftOrderData
+  //     );
+  //     expect(draftOrder).toBeDefined();
+  //     expect(draftOrder.draftOrderId).toBeDefined();
 
-      const completedOrder = await client.completeDraftOrder(
-        SHOPIFY_ACCESS_TOKEN,
-        MYSHOPIFY_DOMAIN,
-        draftOrder.draftOrderId,
-        draftOrderData.lineItems[0].variantId
-      );
-      expect(completedOrder).toBeDefined();
-      expect(completedOrder.orderId).toBeDefined();
-    });
-  });
+  //     const completedOrder = await client.completeDraftOrder(
+  //       SHOPIFY_ACCESS_TOKEN,
+  //       MYSHOPIFY_DOMAIN,
+  //       draftOrder.draftOrderId,
+  //       draftOrderData.lineItems[0].variantId
+  //     );
+  //     expect(completedOrder).toBeDefined();
+  //     expect(completedOrder.orderId).toBeDefined();
+  //   });
+  // });
 
   describe("Collections", () => {
     it("should load collections", async () => {

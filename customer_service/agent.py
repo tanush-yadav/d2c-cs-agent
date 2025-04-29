@@ -88,6 +88,7 @@ async def cleanup():
         await _exit_stack.aclose()
         _exit_stack = None
 
+
 def register_shutdown_handlers():
     """Register handlers for graceful shutdown."""
     import signal

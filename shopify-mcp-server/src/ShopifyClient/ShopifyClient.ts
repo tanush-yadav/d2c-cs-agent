@@ -834,6 +834,15 @@ export class ShopifyClient implements ShopifyClientPort {
               provinceCode
               countryCode
             }
+            fulfillments(first: 1) {
+              trackingInfo(first: 1) {
+                number
+                company
+                url
+              }
+              status
+              createdAt
+            }
             lineItems(first: 50) {
               nodes {
                 id
@@ -1728,6 +1737,7 @@ export class ShopifyClient implements ShopifyClientPort {
       "created_at",
       "customer",
       "email",
+      "fulfillments",
     ];
 
     if (!fields) return defaultFields.join(",");

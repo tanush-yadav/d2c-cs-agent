@@ -7,10 +7,9 @@ import { ShopifyClient } from "./ShopifyClient/ShopifyClient.js";
 import {
   CreateBasicDiscountCodeInput,
   CreateDraftOrderPayload,
-  CustomError,
   ProductNode,
   ShopifyOrderGraphql,
-  ShopifyWebhookTopic,
+  ShopifyWebhookTopic
 } from "./ShopifyClient/ShopifyClientPort.js";
 
 const server = new McpServer({
@@ -49,8 +48,28 @@ function formatProduct(product: ProductNode): string {
 }
 
 function formatOrder(order: ShopifyOrderGraphql): string {
+  let fulfillmentInfo = "No fulfillment information";
+  if (order.fulfillments && order.fulfillments.length > 0) {
+    const fulfillment = order.fulfillments[0];
+    fulfillmentInfo = `
+  Fulfillment Status: ${fulfillment.status}
+  Fulfilled At: ${fulfillment.createdAt}`;
+    if (fulfillment.trackingInfo && fulfillment.trackingInfo.length > 0) {
+      const tracking = fulfillment.trackingInfo[0];
+      fulfillmentInfo += `
+  Tracking Number: ${tracking.number}
+  Tracking Company: ${tracking.company}
+  Tracking URL: ${tracking.url}`;
+    }
+  }
+
+  // Extract the numeric ID from the full GraphQL ID
+  const numericOrderId = order.id.split('/').pop();
+  const numericCustomerId = order.customer?.id.split('/').pop();
+
   return `
-  Order: ${order.name} (${order.id})
+  Order name : ${order.name}
+  Order ID: ${numericOrderId}
   Created At: ${order.createdAt}
   Status: ${order.displayFinancialStatus || "N/A"}
   Email: ${order.email || "N/A"}
@@ -63,7 +82,7 @@ function formatOrder(order: ShopifyOrderGraphql): string {
   Customer: ${
     order.customer
       ? `
-    ID: ${order.customer.id}
+    ID: ${numericCustomerId}
     Email: ${order.customer.email}`
       : "No customer information"
   }
@@ -76,7 +95,7 @@ function formatOrder(order: ShopifyOrderGraphql): string {
       : "No shipping address"
   }
 
-  Line Items: ${
+  Details: ${
     order.lineItems.nodes.length > 0
       ? order.lineItems.nodes
           .map(
@@ -98,6 +117,8 @@ function formatOrder(order: ShopifyOrderGraphql): string {
           .join("\n")
       : "No items"
   }
+
+  ${fulfillmentInfo}
   `;
 }
 
@@ -112,7 +133,11 @@ server.tool(
       .describe("Search title, if missing, will return all products"),
     limit: z.number().describe("Maximum number of products to return"),
   },
-  async ({ searchTitle, limit }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: get-products with args: ${JSON.stringify(args)}`
+    );
+    const { searchTitle, limit } = args;
     const client = new ShopifyClient();
     try {
       const products = await client.loadProducts(
@@ -144,7 +169,11 @@ server.tool(
       .default(10)
       .describe("Maximum number of products to return"),
   },
-  async ({ collectionId, limit }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: get-products-by-collection with args: ${JSON.stringify(args)}`
+    );
+    const { collectionId, limit } = args;
     const client = new ShopifyClient();
     try {
       const products = await client.loadProductsByCollectionId(
@@ -171,7 +200,11 @@ server.tool(
       .array(z.string())
       .describe("Array of product IDs to retrieve"),
   },
-  async ({ productIds }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: get-products-by-ids with args: ${JSON.stringify(args)}`
+    );
+    const { productIds } = args;
     const client = new ShopifyClient();
     try {
       const products = await client.loadProductsByIds(
@@ -197,7 +230,11 @@ server.tool(
       .array(z.string())
       .describe("Array of variant IDs to retrieve"),
   },
-  async ({ variantIds }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: get-variants-by-ids with args: ${JSON.stringify(args)}`
+    );
+    const { variantIds } = args;
     const client = new ShopifyClient();
     try {
       const variants = await client.loadVariantsByIds(
@@ -222,7 +259,11 @@ server.tool(
     limit: z.number().optional().describe("Limit of customers to return"),
     next: z.string().optional().describe("Next page cursor"),
   },
-  async ({ limit, next }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: get-customers with args: ${JSON.stringify(args)}`
+    );
+    const { limit, next } = args;
     const client = new ShopifyClient();
     try {
       const response = await client.loadCustomers(
@@ -247,7 +288,11 @@ server.tool(
     customerId: z.string().describe("Customer ID to tag"),
     tags: z.array(z.string()).describe("Tags to add to the customer"),
   },
-  async ({ customerId, tags }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: tag-customer with args: ${JSON.stringify(args)}`
+    );
+    const { customerId, tags } = args;
     const client = new ShopifyClient();
     try {
       const success = await client.tagCustomer(
@@ -293,7 +338,11 @@ server.tool(
       .describe("Field to sort by"),
     reverse: z.boolean().optional().describe("Reverse sort order"),
   },
-  async ({ first, after, query, sortKey, reverse }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: get-orders with args: ${JSON.stringify(args)}`
+    );
+    const { first, after, query, sortKey, reverse } = args;
     const client = new ShopifyClient();
     try {
       const response = await client.loadOrders(
@@ -301,7 +350,7 @@ server.tool(
         MYSHOPIFY_DOMAIN,
         {
           first,
-          after,
+          // after,
           query,
           sortKey,
           reverse,
@@ -323,7 +372,11 @@ server.tool(
   {
     orderId: z.string().describe("ID of the order to retrieve"),
   },
-  async ({ orderId }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: get-order with args: ${JSON.stringify(args)}`
+    );
+    const { orderId } = args;
     const client = new ShopifyClient();
     try {
       const order = await client.loadOrder(
@@ -359,15 +412,19 @@ server.tool(
       .boolean()
       .describe("Whether discount can be used only once per customer"),
   },
-  async ({
-    title,
-    code,
-    valueType,
-    value,
-    startsAt,
-    endsAt,
-    appliesOncePerCustomer,
-  }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: create-discount with args: ${JSON.stringify(args)}`
+    );
+    const {
+      title,
+      code,
+      valueType,
+      value,
+      startsAt,
+      endsAt,
+      appliesOncePerCustomer,
+    } = args;
     const client = new ShopifyClient();
     try {
       const discountInput: CreateBasicDiscountCodeInput = {
@@ -428,7 +485,11 @@ server.tool(
       .describe("Shipping address details"),
     note: z.string().optional().describe("Optional note for the order"),
   },
-  async ({ lineItems, email, shippingAddress, note }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: create-draft-order with args: ${JSON.stringify(args)}`
+    );
+    const { lineItems, email, shippingAddress, note } = args;
     const client = new ShopifyClient();
     try {
       const draftOrderData: CreateDraftOrderPayload = {
@@ -460,7 +521,11 @@ server.tool(
     draftOrderId: z.string().describe("ID of the draft order to complete"),
     variantId: z.string().describe("ID of the variant in the draft order"),
   },
-  async ({ draftOrderId, variantId }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: complete-draft-order with args: ${JSON.stringify(args)}`
+    );
+    const { draftOrderId, variantId } = args;
     const client = new ShopifyClient();
     try {
       const completedOrder = await client.completeDraftOrder(
@@ -492,7 +557,11 @@ server.tool(
       .describe("Maximum number of collections to return"),
     name: z.string().optional().describe("Filter collections by name"),
   },
-  async ({ limit, name }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: get-collections with args: ${JSON.stringify(args)}`
+    );
+    const { limit, name } = args;
     const client = new ShopifyClient();
     try {
       const collections = await client.loadCollections(
@@ -510,7 +579,10 @@ server.tool(
 );
 
 // Shop Tools
-server.tool("get-shop", "Get shop details", {}, async () => {
+server.tool("get-shop", "Get shop details", {}, async (args) => {
+  console.error(
+    `[MCP Server] Received call: get-shop with args: ${JSON.stringify(args)}`
+  );
   const client = new ShopifyClient();
   try {
     const shop = await client.loadShop(SHOPIFY_ACCESS_TOKEN, MYSHOPIFY_DOMAIN);
@@ -526,7 +598,10 @@ server.tool(
   "get-shop-details",
   "Get extended shop details including shipping countries",
   {},
-  async () => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: get-shop-details with args: ${JSON.stringify(args)}`
+    );
     const client = new ShopifyClient();
     try {
       const shopDetails = await client.loadShopDetail(
@@ -559,7 +634,11 @@ server.tool(
       .optional()
       .describe("Webhook ID (required for unsubscribe)"),
   },
-  async ({ action, callbackUrl, topic, webhookId }) => {
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: manage-webhook with args: ${JSON.stringify(args)}`
+    );
+    const { action, callbackUrl, topic, webhookId } = args;
     const client = new ShopifyClient();
     try {
       switch (action) {
@@ -615,12 +694,51 @@ function handleError(
   content: { type: "text"; text: string }[];
   isError: boolean;
 } {
+  console.error(`[MCP Server] Error encountered:`, error);
+
   let errorMessage = defaultMessage;
-  if (error instanceof CustomError) {
+  let errorDetails = "";
+
+  // Extract detailed error information based on error type
+  if (error instanceof Error) {
     errorMessage = `${defaultMessage}: ${error.message}`;
+
+    // Handle specific Shopify Client error types
+    if ("code" in error && typeof error.code === "string") {
+      errorDetails += `\nError Code: ${error.code}`;
+    }
+
+    if ("statusCode" in error && typeof error.statusCode === "number") {
+      errorDetails += `\nStatus Code: ${error.statusCode}`;
+    }
+
+    if ("contextData" in error) {
+      try {
+        errorDetails += `\nContext: ${JSON.stringify(error.contextData, null, 2)}`;
+      } catch (e) {
+        errorDetails += `\nContext: [Complex object that couldn't be stringified]`;
+      }
+    }
+
+    // Include stack trace in development environments
+    if (process.env.NODE_ENV !== "production" && error.stack) {
+      errorDetails += `\n\nStack Trace:\n${error.stack}`;
+    }
+  } else if (typeof error === "object" && error !== null) {
+    try {
+      errorDetails = `\nDetails: ${JSON.stringify(error, null, 2)}`;
+    } catch (e) {
+      errorDetails = `\nDetails: [Complex object that couldn't be stringified]`;
+    }
   }
+
+  // Combine message and details
+  const fullErrorMessage = errorDetails
+    ? `${errorMessage}\n${errorDetails}`
+    : errorMessage;
+
   return {
-    content: [{ type: "text", text: errorMessage }],
+    content: [{ type: "text", text: fullErrorMessage }],
     isError: true,
   };
 }

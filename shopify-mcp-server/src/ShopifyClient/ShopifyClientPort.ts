@@ -884,6 +884,15 @@ export type ShopifyOrderGraphql = {
     provinceCode: string | null;
     countryCode: string;
   } | null;
+  fulfillments?: Array<{
+    status: string;
+    createdAt: string;
+    trackingInfo: Array<{
+      number: string;
+      company: string;
+      url: string;
+    }>;
+  }>;
   lineItems: {
     nodes: Array<{
       id: string;

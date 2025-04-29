@@ -14,3 +14,6 @@ This directory contains the Node.js/TypeScript code for the Shopify MCP server.
 - **Build Output:** [build/](mdc:shopify-mcp-server/build)
 - **Tests:** (Potentially defined in `package.json` or a `tests/` directory)
 - **Dependencies:** [node_modules/](mdc:shopify-mcp-server/node_modules)
+
+1. Whenever making changes to graphQL etc. always refere to shopify-dev-mcp, introspect admin schema tool to get the correct schema.
+2. Refrain from adding new tools, unless specifically told to do so.

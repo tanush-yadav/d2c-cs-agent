@@ -386,3 +386,19 @@ def generate_qr_code(
         "qr_code_data": "MOCK_QR_CODE_DATA",  # Replace with actual QR code
         "expiration_date": expiration_date,
     }
+
+
+def get_shipment_details_from_url(url: str) -> dict:
+    """
+    Retrieves shipment details from a given URL.
+
+    Args:
+        url: The URL containing shipment details.
+
+    Returns:
+        A dictionary containing the shipment details.
+    """
+    # 1. go to the link like : https://shipment.xpressbees.com/shipping/tracking/152489850110894
+    # 2. get the shipment details
+    # 3. format properly with dates and pass back to LLM
+    logger.info("Retrieving shipment details from URL: %s", url)
