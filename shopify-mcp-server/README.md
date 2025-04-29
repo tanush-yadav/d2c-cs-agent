@@ -241,3 +241,40 @@ MIT
 
 ---
 Note: This is a fork of the [original shopify-mcp-server repository](https://github.com/rezapex/shopify-mcp-server-main
+
+## Code Improvement Plan
+
+The following improvements are planned to enhance code quality while maintaining all existing functionality:
+
+1. **Code Structure Improvements**
+   - Split `index.ts` into separate modules (routes, formatters, error handlers)
+   - Move tool definitions into dedicated files by category (products, orders, etc.)
+   - Create proper separation of concerns between API layer and business logic
+
+2. **Code Quality Enhancements**
+   - Add proper TypeScript interfaces for all data structures
+   - Implement consistent error handling patterns
+   - Add input validation for all tool parameters
+   - Improve logging with structured log format
+   - Add JSDoc comments to all functions
+
+3. **Project Setup Improvements**
+   - Add ESLint for code quality enforcement
+   - Add Prettier for consistent code formatting
+   - Implement environment variable validation
+   - Add pre-commit hooks for quality checks
+   - Expand test coverage beyond ShopifyClient
+
+4. **Performance Optimizations**
+   - Add request caching for frequently used data
+   - Implement connection pooling for API requests
+   - Add timeout handling for all external requests
+   - Optimize GraphQL queries to reduce response size
+
+5. **Reliability Improvements**
+   - Add retry logic for transient API failures
+   - Implement circuit breaker pattern for external services
+   - Add proper timeouts for all API calls
+   - Improve error messages for better troubleshooting
+
+Each improvement will be made carefully to ensure no changes to existing functionality or logic.
