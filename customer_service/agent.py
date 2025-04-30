@@ -38,7 +38,20 @@ root_agent = Agent(
 )
 
 async def get_shopify_tools() -> Tuple[List[MCPTool], AsyncExitStack]:
-    """Get MCP tools from the Shopify server."""
+    """
+    Get MCP tools from the Shopify server.
+
+    Available tools include:
+    - Product Management: findProducts, listProductsInCollection, getProductsByIds, getVariantsByIds
+    - Customer Management: listCustomers, addCustomerTags
+    - Order Management: findOrders, getOrderById, createDraftOrder, completeDraftOrder
+    - Discount Management: createDiscountCode
+    - Collection Management: listCollections
+    - Shop Information: getShopDetails, getExtendedShopDetails
+    - Webhook Management: manageWebhooks
+    - Debugging Tools: debugGetVariantMetafield
+    - Developer Tools: introspect_admin_schema, search_dev_docs
+    """
     global _exit_stack, _mcp_tools
 
     if _mcp_tools is not None:
@@ -61,7 +74,7 @@ async def get_shopify_tools() -> Tuple[List[MCPTool], AsyncExitStack]:
             connection_params=StdioServerParameters(
                 command="node",
                 args=[
-                    "/Users/tanush/code/d2c-cs-agent/shopify-mcp-server/build/index.js"
+                    "/Users/tanush/code/shopify-mcp-server/build/index.js"
                 ],
                 env={
                     "SHOPIFY_ACCESS_TOKEN": shopify_access_token,
@@ -89,9 +102,6 @@ async def initialize_agents_and_tools():
     # Initialize specialized agents with their tools
     await initialize_order_tools(tools)
     await initialize_product_tools(tools)
-
-    # Add tools to main agent
-    root_agent.tools.extend(tools)
 
     # Add specialized agents to sub_agents list for automatic delegation
     root_agent.sub_agents = [order_agent, product_agent]
