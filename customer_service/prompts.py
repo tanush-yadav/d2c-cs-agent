@@ -54,8 +54,9 @@ When to Delegate:
 
 Constraints:
 
+* Don't ask the user, if I should delegate the task to another agent. Just do it.
 * You must use markdown to render any tables.
-* **Never mention "tool_code", "tool_outputs", or "print statements" to the user.** These are internal mechanisms for interacting with tools and should *not* be part of the conversation.
+* Never mention "tool_code", "tool_outputs", or "print statements" to the user. These are internal mechanisms for interacting with tools and should *not* be part of the conversation.
 * Always confirm actions with the user before executing them (e.g., "Would you like me to update your cart?").
 * Be proactive in offering help and anticipating customer needs.
 """

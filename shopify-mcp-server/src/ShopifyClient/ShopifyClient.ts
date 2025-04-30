@@ -58,6 +58,10 @@ const productVariantsFragment = gql`
   title
   price
   sku
+  metafield(namespace: "custom", key: "size_chart_json") {
+    value
+    type
+  }
   image {
     ${productImagesFragment}
   }

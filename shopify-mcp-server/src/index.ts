@@ -30,20 +30,35 @@ if (!MYSHOPIFY_DOMAIN) {
 }
 
 function formatProduct(product: ProductNode): string {
+  const variantsString = product.variants.edges
+    .map((variantEdge) => {
+      const variant = variantEdge.node;
+      let sizeChartInfo = "";
+      // Check for metafield on the variant
+      if (variant.metafield && variant.metafield.value) {
+        try {
+          const parsedValue = JSON.parse(variant.metafield.value);
+          sizeChartInfo = `\n    variant.sizeChart: ${JSON.stringify(parsedValue, null, 2)}`;
+        } catch (e) {
+          sizeChartInfo = `\n    variant.sizeChart: ${variant.metafield.value}`;
+        }
+      }
+
+      return `variant.title: ${variant.title}
+    variant.id: ${variant.id}
+    variant.price: ${variant.price}
+    variant.sku: ${variant.sku}
+    variant.inventoryPolicy: ${variant.inventoryPolicy}
+    variant.sizeChart: ${sizeChartInfo}
+    `;
+    })
+    .join(", ");
+
   return `
   Product: ${product.title}
   description: ${product.description}
   handle: ${product.handle}
-  variants: ${product.variants.edges
-    .map(
-      (variant) => `variant.title: ${variant.node.title}
-    variant.id: ${variant.node.id}
-    variant.price: ${variant.node.price}
-    variant.sku: ${variant.node.sku}
-    variant.inventoryPolicy: ${variant.node.inventoryPolicy}
-    `
-    )
-    .join(", ")}
+  variants: ${variantsString}
   `;
 }
 
@@ -687,6 +702,57 @@ server.tool(
     }
   }
 );
+
+// Tool to check if the size-chart is present in the variant
+server.tool(
+  "debug-get-variant-metafield",
+  "DEBUG: Get a specific variant and its size_chart_json metafield.",
+  {
+    variantId: z
+      .string()
+      .describe("The GID of the variant (e.g., gid://shopify/ProductVariant/XXXX)"),
+  },
+  async (args) => {
+    console.error(
+      `[MCP Server] Received call: debug-get-variant-metafield with args: ${JSON.stringify(args)}`
+    );
+    const { variantId } = args;
+    const client = new ShopifyClient();
+    const graphqlQuery = `
+      query GetVariantMetafield($id: ID!) {
+        node(id: $id) {
+          ... on ProductVariant {
+            id
+            title
+            metafield(namespace: "custom", key: "size_chart_json") {
+              id
+              value
+              type
+              namespace
+              key
+            }
+          }
+        }
+      }
+    `;
+    try {
+      const result = await client.shopifyGraphqlRequest<any>({
+        url: `https://${MYSHOPIFY_DOMAIN}/admin/api/2024-04/graphql.json`,
+        accessToken: SHOPIFY_ACCESS_TOKEN,
+        query: graphqlQuery,
+        variables: { id: variantId },
+      });
+      return {
+        content: [
+          { type: "text", text: `Raw GraphQL Response:\n${JSON.stringify(result.data, null, 2)}` },
+        ],
+      };
+    } catch (error) {
+      return handleError("Failed to execute debug GraphQL query", error);
+    }
+  }
+);
+// ***** END TEMPORARY DEBUG TOOL *****
 
 // Utility function to handle errors
 function handleError(

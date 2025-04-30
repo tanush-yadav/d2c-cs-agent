@@ -410,6 +410,10 @@ export type ProductVariant = {
   image: Nullable<ProductImage>;
   inventoryPolicy: "CONTINUE" | "DENY";
   selectedOptions: SelectedProductOption[];
+  metafield?: {
+    value: string;
+    type: string;
+  } | null;
 };
 
 export type ShopResponse = {
