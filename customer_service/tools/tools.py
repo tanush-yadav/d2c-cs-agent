@@ -384,6 +384,3 @@ def generate_qr_code(
         "qr_code_data": "MOCK_QR_CODE_DATA",  # Replace with actual QR code
         "expiration_date": expiration_date,
     }
-
-
-def scrape_tracking_info(tracking_number: str) -> dict:
